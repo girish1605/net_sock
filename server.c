@@ -8,7 +8,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 
-#define PORT 6000
+#define PORT 6789
 #define BACKLOG 5
 #define BUFFMAX 1024
 
@@ -43,22 +43,20 @@ int main(int argc, char** argv) {
 	CHECK_ERR((retval < 0),"Listen");
 
 	do {
-		retval = accept(sockfd, (struct sockaddr *)&clientAddr, &clientLen);
+		connfd = accept(sockfd, (struct sockaddr *)&clientAddr, &clientLen);
 		CHECK_ERR((retval < 0), "Accept");
-		printf("Yey! +1 client connected\n");		
+		printf("Yey! +1 client connected to ip:\"%s:%lu \" \n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));
 		do {
-			memset(buff, '0', strlen(buff));
+			memset(buff, '\0', strlen(buff));
 			printf("Me :: ");
 			scanf(" %[^\n]", buff);
-			retval = send(sockfd, buff, strlen(buff), 0);
-			CHECK_ERR((retval < 0), "Write");
+			retval = send(connfd, buff, strlen(buff), 0);
+			//CHECK_ERR((retval < 0), "Write");
 			
-			memset(buff, '0', strlen(buff));
-			printf("Server is waiting ...\n");
-			retval = recv(sockfd, buff, BUFFMAX, 0);	
-			CHECK_ERR((retval < 0),"Read");
-			buff[retval] = '\0';
-			printf("User :: %s", buff);
+			memset(buff, '\0', strlen(buff));
+			retval = recv(connfd, buff, BUFFMAX, 0);	
+			//CHECK_ERR((retval < 0),"Read");
+			printf("User :: %s\n", buff);
 		} while(1);	
 
 	} while(1);

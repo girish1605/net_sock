@@ -7,7 +7,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#define PORT 6000
+#define PORT 6789
 #define BUFFMAX 1024
 #define CHECK_ERR(v, msg) \
 	if(v){ perror(msg); exit(EXIT_FAILURE); } \
@@ -31,17 +31,16 @@ int main(int argc, char* argv[]) {
 	CHECK_ERR((retval < 0), "Connet");
 
 	do {
-		memset(buff, '0', strlen(buff));
+		memset(buff, '\0', strlen(buff));
 		retval = recv(sockfd, buff, BUFFMAX, 0);
-		CHECK_ERR((retval < 0),"Read");
-		buff[retval] = '\0';
-		printf("CPU :: %s", buff);
+		//CHECK_ERR((retval < 0),"Read");
+		printf("CPU :: %s\n", buff);
 		
-		memset(buff, '0', strlen(buff));
+		memset(buff, '\0', strlen(buff));
 		printf("Me :: ");
 		scanf(" %[^\n]", buff);
 		retval = send(sockfd, buff, strlen(buff), 0);
-		CHECK_ERR((retval < 0), "Write");
+		//CHECK_ERR((retval < 0), "Write");
 	} while (1);
 
 	return 0;
